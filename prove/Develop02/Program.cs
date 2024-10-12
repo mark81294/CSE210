@@ -3,19 +3,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-public class Entry
+public class JournalEntry
 {
-    public string Prompt { get; set; }
-    public string Response { get; set; }
-    public string Date { get; set; }
+    // Properties for the entry's prompt, response, and date
+    public string Prompt { get; private set; }
+    public string Response { get; private set; }
+    public string Date { get; private set; }
 
-    public Entry(string prompt, string response)
+    // Constructor to initialize the journal entry
+    public JournalEntry(string prompt, string response)
     {
         Prompt = prompt;
         Response = response;
         Date = DateTime.Now.ToShortDateString();
     }
 
+    // Override ToString for formatted output
     public override string ToString()
     {
         return $"{Date} | {Prompt} | {Response}";
@@ -24,7 +27,10 @@ public class Entry
 
 public class Journal
 {
-    private List<Entry> entries = new List<Entry>();
+    // List to hold journal entries
+    private List<JournalEntry> entries = new List<JournalEntry>();
+
+    // Predefined prompts for journal entries
     private static readonly string[] prompts = {
         "Who was the most interesting person I interacted with today?",
         "What was the best part of my day?",
@@ -33,15 +39,17 @@ public class Journal
         "If I had one thing I could do over today, what would it be?"
     };
 
+    // Method to add a new journal entry
     public void AddEntry(string response)
     {
         Random random = new Random();
         int index = random.Next(prompts.Length);
-        Entry entry = new Entry(prompts[index], response);
+        JournalEntry entry = new JournalEntry(prompts[index], response);
         entries.Add(entry);
         Console.WriteLine("Entry added!");
     }
 
+    // Method to display all journal entries
     public void DisplayEntries()
     {
         Console.WriteLine("Journal Entries:");
@@ -51,6 +59,7 @@ public class Journal
         }
     }
 
+    // Method to save journal entries to a file
     public void SaveToFile(string filename)
     {
         using (StreamWriter outputFile = new StreamWriter(filename))
@@ -63,6 +72,7 @@ public class Journal
         Console.WriteLine("Journal saved to file!");
     }
 
+    // Method to load journal entries from a file
     public void LoadFromFile(string filename)
     {
         entries.Clear();
@@ -75,7 +85,7 @@ public class Journal
                 string date = parts[0].Trim();
                 string prompt = parts[1].Trim();
                 string response = parts[2].Trim();
-                entries.Add(new Entry(prompt, response) { Date = date });
+                entries.Add(new JournalEntry(prompt, response) { Date = date });
             }
         }
         Console.WriteLine("Journal loaded from file!");
@@ -84,11 +94,13 @@ public class Journal
 
 class Program
 {
+    // Entry point of the application
     static void Main(string[] args)
     {
         Journal journal = new Journal();
         bool running = true;
 
+        // Main loop for the journal application
         while (running)
         {
             Console.WriteLine("\nJournal Menu:");
